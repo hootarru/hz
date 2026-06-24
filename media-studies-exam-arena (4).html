@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Studies — Exam Arena</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a14;
+  --bg2:#0f0f1f;
+  --glass:rgba(255,255,255,0.05);
+  --glass-border:rgba(255,255,255,0.12);
+  --purple:#a855f7;
+  --blue:#38bdf8;
+  --green:#34d399;
+  --red:#f87171;
+  --text:#e8e8f5;
+  --text-dim:#9999b3;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;font-family:'Inter',sans-serif;background:
+  radial-gradient(circle at 20% 10%, #1b1033 0%, transparent 45%),
+  radial-gradient(circle at 80% 0%, #0a2b3d 0%, transparent 40%),
+  var(--bg);
+  color:var(--text);min-height:100vh;
+}
+.glass{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(14px);
+  border-radius:18px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.35);
+}
+header{padding:18px 22px;position:sticky;top:0;z-index:50;
+  background:rgba(10,10,20,0.75);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--glass-border);}
+.header-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.logo{font-weight:800;font-size:20px;background:linear-gradient(90deg,var(--purple),var(--blue));
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.countdown{font-size:13px;color:var(--text-dim);text-align:right;}
+.countdown b{color:var(--blue);font-size:15px;}
+.progress-wrap{height:8px;border-radius:6px;background:rgba(255,255,255,0.08);margin-top:12px;overflow:hidden;}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--purple),var(--blue));border-radius:6px;transition:width .4s;}
+nav{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+.tab{padding:9px 14px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;
+  border:1px solid var(--glass-border);color:var(--text-dim);background:rgba(255,255,255,0.03);transition:.2s;white-space:nowrap;}
+.tab:hover{color:var(--text);}
+.tab.active{background:linear-gradient(90deg,var(--purple),var(--blue));color:#fff;border-color:transparent;}
+main{max-width:1200px;margin:0 auto;padding:24px 18px 80px;display:flex;gap:20px;align-items:flex-start;}
+.content{flex:1;min-width:0;}
+.sidebar{width:300px;flex-shrink:0;position:sticky;top:160px;max-height:75vh;overflow-y:auto;}
+@media(max-width:900px){main{flex-direction:column;}.sidebar{width:100%;position:relative;top:0;max-height:none;}}
+.section{display:none;animation:fadein .35s;}
+.section.active{display:block;}
+@keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.card{padding:20px;margin-bottom:18px;}
+h2{margin:0 0 6px;font-size:20px;}
+.sub{color:var(--text-dim);font-size:13px;margin-bottom:16px;}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:10px;padding:10px 18px;font-weight:700;font-size:13px;
+  background:linear-gradient(90deg,var(--purple),var(--blue));color:#fff;transition:.2s;}
+button:hover{filter:brightness(1.15);transform:translateY(-1px);}
+button.secondary{background:rgba(255,255,255,0.08);color:var(--text);border:1px solid var(--glass-border);}
+textarea,input[type=text]{
+  width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);border-radius:10px;
+  color:var(--text);padding:10px 12px;font-family:inherit;font-size:14px;resize:vertical;
+}
+textarea:focus,input:focus{outline:none;border-color:var(--purple);}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px;}
+.topic-box{padding:16px;border-radius:14px;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);
+  font-weight:600;margin-bottom:14px;min-height:24px;}
+.field-label{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--blue);margin:14px 0 4px;font-weight:700;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-left:8px;}
+.badge.green{background:rgba(52,211,153,0.18);color:var(--green);}
+.badge.blue{background:rgba(56,189,248,0.18);color:var(--blue);}
+.highlight{background:rgba(52,211,153,0.35);color:#fff;border-radius:4px;padding:1px 3px;}
+.flash{margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:700;font-size:14px;display:none;}
+.flash.ok{background:rgba(52,211,153,0.15);color:var(--green);display:block;}
+.flash.bad{background:rgba(248,113,113,0.15);color:var(--red);display:block;}
+.stat-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+.stat{flex:1;min-width:110px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.04);text-align:center;}
+.stat .num{font-size:22px;font-weight:800;color:var(--blue);}
+.stat .lbl{font-size:11px;color:var(--text-dim);}
+.def-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:650px){.def-grid{grid-template-columns:1fr;}}
+.match-item{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);
+  cursor:pointer;font-size:13px;transition:.15s;}
+.match-item:hover{border-color:var(--purple);}
+.match-item.selected{border-color:var(--blue);background:rgba(56,189,248,0.15);}
+.match-item.correct{border-color:var(--green);background:rgba(52,211,153,0.18);}
+.match-item.wrong{border-color:var(--red);background:rgba(248,113,113,0.18);}
+.swipe-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.swipe-card{width:100%;max-width:380px;height:220px;perspective:1200px;cursor:pointer;touch-action:pan-y;}
+.swipe-inner{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d;}
+.swipe-card.flipped .swipe-inner{transform:rotateY(180deg);}
+.swipe-face{position:absolute;width:100%;height:100%;border-radius:20px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:18px;backface-visibility:hidden;text-align:center;border:1px solid var(--glass-border);}
+.swipe-front{background:linear-gradient(160deg,rgba(168,85,247,0.18),rgba(56,189,248,0.1));}
+.swipe-front .term{font-size:26px;font-weight:800;}
+.swipe-front .type-tag{margin-top:10px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);}
+.swipe-back{background:linear-gradient(160deg,rgba(56,189,248,0.18),rgba(168,85,247,0.1));transform:rotateY(180deg);}
+.swipe-back .ru{font-size:20px;font-weight:800;color:var(--blue);margin-bottom:10px;}
+.swipe-back .ex{font-size:13px;color:var(--text);}
+.swipe-controls{display:flex;align-items:center;gap:14px;}
+.swipe-controls button{padding:10px 16px;font-size:18px;}
+.swipe-counter{font-size:13px;color:var(--text-dim);min-width:70px;text-align:center;}
+.deck-filter{display:flex;gap:8px;margin-bottom:14px;}
+.deck-filter .tab{padding:6px 12px;font-size:12px;}
+.save-list{font-size:12px;}
+.save-item{padding:8px 10px;border-radius:8px;margin-bottom:6px;background:rgba(255,255,255,0.04);}
+.save-item b{color:var(--purple);}
+.save-item span{display:block;color:var(--text-dim);font-size:11px;}
+.search-box{margin-bottom:10px;}
+.essay-struct div{margin-bottom:10px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.04);}
+.essay-struct b{color:var(--blue);}
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo">⚡ Media Studies — Тренажёр к экзамену</div>
+    <div class="countdown">Экзамен: 25 июня 2026<br><b id="countdownText">—</b></div>
+  </div>
+  <div class="progress-wrap"><div class="progress-bar" id="overallProgress" style="width:0%"></div></div>
+  <nav id="tabs"></nav>
+</header>
+
+<main>
+  <div class="content" id="content"></div>
+  <aside class="sidebar glass card">
+    <h2 style="font-size:16px;">📌 Полезные слова</h2>
+    <input class="search-box" type="text" id="saveSearch" placeholder="Поиск...">
+    <div class="save-list" id="saveWordsList"></div>
+  </aside>
+</main>
+
+<script>
+/* ======================= DATA ======================= */
+
+const TOPICS = [
+"Discuss the impact of user-generated content on journalistic standards.",
+"Is technological determinism still relevant in the age of AI?",
+"Analyze the role of media in shaping political identity.",
+"Does the internet create a public sphere or fragment it?",
+"Compare McLuhan's technological determinism with Castells' network society.",
+"How do simulacra (Baudrillard) manifest in contemporary social media?",
+"Is the culture industry (Adorno) more powerful today or less?",
+"Can memes be considered a form of resistance (Hall's encoding/decoding)?",
+"Discuss the relevance of Propp's narrative functions in modern cinema.",
+"Is surveillance capitalism (Zuboff) inevitable in digital media?",
+"Does social media empower or manipulate audiences?",
+"How does the aesthetics of the smooth (Han) apply to AI-generated content?",
+"Is the public sphere (Habermas) possible in the age of algorithms?",
+"Analyze the relationship between media ownership and democracy.",
+"Do algorithms create echo chambers or expand horizons?",
+"Is freedom of speech (Mill) compatible with platform content moderation?",
+"How does Kant's 'thing in itself' relate to media representation?",
+"Can narrative theory (Propp, Todorov) explain viral content?",
+"Is media power (Foucault) visible or invisible today?",
+"Does AI-generated content destroy or create new forms of meaning?"
+];
+
+const SYNONYMS = {
+"important":["crucial","vital","paramount","significant","essential"],
+"change":["transform","alter","modify","shift","reshape"],
+"big":["substantial","considerable","massive","immense"],
+"good":["beneficial","advantageous","favourable","valuable"],
+"bad":["detrimental","harmful","adverse","damaging"],
+"help":["facilitate","assist","support","enable"],
+"show":["demonstrate","illustrate","indicate","reveal"],
+"make":["generate","produce","create","construct"],
+"use":["utilize","employ","deploy","implement"],
+"think":["consider","argue","maintain","contend"],
+"problem":["challenge","obstacle","dilemma","complication"],
+"result":["outcome","consequence","implication","effect"],
+"idea":["concept","notion","theory","proposition"],
+"way":["approach","method","manner","strategy"],
+"need":["require","demand","necessitate"],
+"cause":["generate","provoke","trigger","induce"],
+"limit":["constrain","restrict","confine","curb"],
+"increase":["escalate","augment","intensify","amplify"],
+"decrease":["diminish","reduce","decline","subside"],
+"improve":["enhance","refine","strengthen","optimize"],
+"establish":["found","institute","enact","formalize"],
+"receive":["obtain","acquire","attain","secure"],
+"respond":["reply","react","counter","acknowledge"],
+"concept":["construct","framework","paradigm","notion"],
+"unpredictable":["erratic","volatile","capricious","arbitrary"],
+"representative":["typical","emblematic","indicative","characteristic"],
+"treatment":["handling","approach","processing","management"],
+"survey":["poll","questionnaire","study","census"],
+"outcome":["upshot","corollary","ramification","sequel"],
+"rule":["principle","norm","guideline","protocol"],
+"intention":["aim","objective","aspiration","motive"],
+"generalize":["extrapolate","conceptualize","theorize","universalize"]
+};
+
+// Example sentences for synonym drill — show the weak word in context.
+const SYN_EXAMPLES = {
+"important":"Media literacy is an ___ skill for navigating online content.",
+"change":"Algorithms ___ the way audiences encounter news.",
+"big":"There has been a ___ increase in user-generated content.",
+"good":"Wider access to platforms can have a ___ effect on participation.",
+"bad":"Echo chambers can have a ___ effect on public debate.",
+"help":"Algorithms ___ users find content similar to what they already like.",
+"show":"This study ___ a clear link between exposure and attitude change.",
+"make":"Platforms ___ new forms of participatory culture.",
+"use":"Researchers ___ surveys to measure audience behaviour.",
+"think":"Many scholars ___ that surveillance capitalism is inevitable.",
+"problem":"Filter bubbles are a major ___ for democratic discourse.",
+"result":"Polarization is one ___ of algorithmic curation.",
+"idea":"The ___ of the public sphere comes from Habermas.",
+"way":"Social media offers a new ___ of constructing identity.",
+"need":"Researchers ___ a representative sample to generalize findings.",
+"cause":"Misinformation can ___ real-world harm.",
+"limit":"Content moderation aims to ___ harmful speech.",
+"increase":"Engagement tends to ___ when content is emotionally charged.",
+"decrease":"Trust in traditional media has started to ___.",
+"improve":"Fact-checking tools can ___ the quality of public discourse.",
+"establish":"Habermas helped ___ the concept of the public sphere.",
+"receive":"Audiences ___ tailored content based on their data.",
+"respond":"Platforms had to ___ to criticism over data privacy.",
+"concept":"Hegemony is a key ___ in cultural studies.",
+"unpredictable":"Viral content spread is famously ___.",
+"representative":"A ___ sample improves the validity of a study.",
+"treatment":"The ___ of minorities in media has been widely studied.",
+"survey":"The researchers conducted a ___ of 500 respondents.",
+"outcome":"Algorithmic bias is an unintended ___ of design choices.",
+"rule":"Platforms enforce a ___ against hate speech.",
+"intention":"The ___ behind the policy was to reduce misinformation.",
+"generalize":"It's risky to ___ from such a small sample."
+};
+const VOCAB = {
+"concept":"an abstract idea or general notion",
+"unpredictable":"not able to be foreseen or anticipated",
+"representative":"typical of a larger group; serving as an example",
+"treatment":"the way something is handled or managed",
+"survey":"a systematic collection of data from respondents",
+"outcome":"the final result or consequence",
+"rule":"a principle or regulation that guides conduct",
+"intention":"a purpose or aim behind an action",
+"generalize":"to draw broad conclusions from specific cases",
+"receive":"to obtain or be given something",
+"significant":"important or meaningful enough to be noticed",
+"valid":"well-founded and logically sound; legitimate",
+"reliable":"consistently good in quality or performance; dependable",
+"sample":"a subset of a population used for research",
+"bias":"systematic deviation from the truth; prejudice",
+"correlation":"a mutual relationship between two variables",
+"causation":"the action of causing something; direct cause-and-effect",
+"variable":"an element that can change or be changed",
+"hypothesis":"a proposed explanation made on limited evidence",
+"empirical":"based on observation or experience rather than theory",
+"theoretical":"based on theory rather than practical application",
+"framework":"a basic structure underlying a system or concept",
+"paradigm":"a typical example or model of something",
+"discourse":"written or spoken communication; a way of thinking about something",
+"narrative":"a spoken or written account of connected events",
+"myth":"a widely held but false belief or idea",
+"ideology":"a system of ideas forming the basis of policy or worldview",
+"hegemony":"dominance of one group over another",
+"agency":"the capacity to act independently and make choices",
+"determinism":"the doctrine that all events are determined by external causes",
+"construction":"the way something is built or made; social construction",
+"representation":"the act of depicting or portraying something",
+"identity":"the characteristics determining who a person is",
+"authenticity":"the quality of being genuine or real",
+"consumption":"the act of using or consuming media or goods",
+"production":"the process of creating media content",
+"distribution":"the process of spreading media to audiences",
+"audience":"the people who receive or consume media",
+"platform":"a digital space where media is shared or consumed",
+"algorithm":"a set of rules used by computers to make decisions",
+"curation":"the selection and organization of content",
+"engagement":"the act of interacting with media content",
+"manipulation":"the act of controlling something or someone unfairly",
+"resistance":"the refusal to accept or comply with something",
+"surveillance":"the monitoring of people's activities or behaviour",
+"privacy":"the state of being free from public attention",
+"consent":"permission given with full knowledge of consequences",
+"accountability":"the responsibility to explain or justify actions",
+"transparency":"the quality of being open and clear about processes",
+"democracy":"a system of government by the whole population"
+};
+
+const GAPFILL = [
+["The study found significant effects; _____, the sample size was small.","however"],
+["Social media users engage emotionally; _____, algorithms prioritize engagement.","consequently"],
+["_____, the evidence suggests that platforms amplify outrage.","moreover"],
+["The theory remains influential; _____, it has been criticized for its determinism.","nonetheless"],
+["_____, audience reception studies offer a more nuanced picture.","accordingly"],
+["Some scholars argue media empowers audiences; _____, others see them as tools of domination.","conversely"],
+["User-generated content has increased; _____, traditional journalism is in crisis.","as a result"],
+["The findings are compelling; _____, they require further replication.","however"],
+["_____, the public sphere has been transformed by digital platforms.","undoubtedly"],
+["The algorithm shapes what we see; _____, we are not entirely passive.","nevertheless"],
+["_____, this study adopts a cultural studies approach.","specifically"],
+["The results are consistent; _____, they confirm earlier research.","therefore"],
+["_____, one must consider the political economy of media.","additionally"],
+["This does not mean media are irrelevant; _____, they are more powerful than ever.","on the contrary"],
+["_____, it is essential to distinguish between correlation and causation.","indeed"],
+["The data suggests a trend; _____, the margin of error is significant.","however"],
+["_____, audiences interpret messages differently based on context.","as noted earlier"],
+["_____, it is worth noting that media ownership affects content.","nevertheless"],
+["The sample was representative; _____, the findings can be generalized.","therefore"],
+["_____, we must consider extraneous factors.","additionally"]
+];
+
+const LINKING_WORDS = [
+["nevertheless","тем не менее","The results were weak; nevertheless, the trend was clear."],
+["however","однако","The sample was small; however, the effect was significant."],
+["nonetheless","всё же, тем не менее","The theory is dated; nonetheless, it remains influential."],
+["on the contrary","напротив","Media did not weaken the public sphere; on the contrary, it expanded it."],
+["conversely","наоборот, в противоположность","Print media declined; conversely, digital media grew."],
+["whereas","в то время как","Print is static, whereas digital content is interactive."],
+["yet","и всё же","The findings are convincing, yet limited in scope."],
+["in contrast","в отличие от","In contrast to Adorno, Hall stresses audience agency."],
+["consequently","следовательно","Engagement rose; consequently, ad revenue increased."],
+["therefore","поэтому, следовательно","The sample was biased; therefore, results cannot be generalized."],
+["hence","отсюда, следовательно","The theory is deterministic, hence its many critics."],
+["thus","таким образом","Thus, the algorithm reinforces existing biases."],
+["as a result","в результате","Trust declined; as a result, audiences sought alternative media."],
+["accordingly","соответственно","Platforms changed policy; accordingly, behaviour shifted."],
+["moreover","более того","Moreover, the study controlled for confounding variables."],
+["furthermore","кроме того, далее","Furthermore, the data supports a causal link."],
+["additionally","дополнительно","Additionally, qualitative interviews were conducted."],
+["indeed","действительно","Indeed, the platform's algorithm shapes visibility."],
+["undoubtedly","несомненно","Undoubtedly, social media has reshaped political discourse."],
+["specifically","конкретно, в частности","Specifically, the study focuses on Gen Z users."],
+["it follows that","отсюда следует, что","It follows that audience fragmentation undermines shared discourse."],
+["one might argue that","можно утверждать, что","One might argue that algorithms reduce, not expand, choice."],
+["this suggests that","это предполагает, что","This suggests that exposure does not equal influence."],
+["it is worth noting that","стоит отметить, что","It is worth noting that correlation does not imply causation."],
+["to some extent","в некоторой степени","To some extent, McLuhan's predictions have been realised."],
+["in principle","в принципе","In principle, open platforms should diversify viewpoints."],
+["in practice","на практике","In practice, algorithms often narrow exposure."],
+["in light of","в свете","In light of recent scandals, regulation has intensified."],
+["given that","учитывая, что","Given that the sample was self-selected, bias is likely."],
+["provided that","при условии, что","The model holds, provided that the data is representative."],
+["insofar as","в той мере, в какой","Insofar as audiences are active, Hall's model applies."],
+["on the one hand","с одной стороны","On the one hand, platforms enable participation."],
+["on the other hand","с другой стороны","On the other hand, they concentrate power unevenly."],
+["similarly","аналогично, подобным образом","Similarly, Castells links networks to power shifts."]
+];
+
+const ACADEMIC_VERBS = [
+["argue","утверждать, аргументировать","Hall argues that meaning is actively decoded by audiences."],
+["contend","настаивать, утверждать","Zuboff contends that surveillance capitalism is a new economic order."],
+["posit","постулировать, выдвигать тезис","McLuhan posits that the medium itself shapes society."],
+["demonstrate","демонстрировать, показывать","The study demonstrates a link between exposure and attitude."],
+["illustrate","иллюстрировать, показывать примером","This case illustrates how algorithms shape visibility."],
+["suggest","предполагать","The data suggests audiences are more active than assumed."],
+["imply","подразумевать","This finding implies a weaker causal link than expected."],
+["undermine","подрывать","Echo chambers undermine shared public discourse."],
+["reinforce","усиливать, подкреплять","Algorithms reinforce existing user preferences."],
+["challenge","ставить под вопрос, оспаривать","Fiske's work challenges purely top-down models of media power."],
+["critique","критически анализировать","Adorno critiques the culture industry as standardized and passive."],
+["problematize","проблематизировать","Foucault problematizes the idea of neutral, objective knowledge."],
+["substantiate","обосновывать, подтверждать","Further evidence is needed to substantiate this claim."],
+["corroborate","подтверждать","Later studies corroborate the original findings."],
+["refute","опровергать","Critics refute the claim that media effects are uniform."],
+["acknowledge","признавать","The author acknowledges the limitations of a small sample."],
+["highlight","подчёркивать, выделять","The report highlights growing concerns over data privacy."],
+["emphasize","подчёркивать","Castells emphasizes the role of networks in modern power."],
+["examine","рассматривать, изучать","This paper examines audience reception of political ads."],
+["explore","исследовать","The study explores how memes function as resistance."],
+["analyze","анализировать","We analyze user comments using content analysis."],
+["assess","оценивать","The survey assesses trust in different news sources."],
+["evaluate","оценивать","It is important to evaluate the validity of the sample."],
+["interpret","интерпретировать","Audiences interpret messages differently depending on context."],
+["conceptualize","концептуализировать","Habermas conceptualizes the public sphere as a space for rational debate."],
+["distinguish","различать","It is important to distinguish correlation from causation."],
+["differentiate","разграничивать","We must differentiate manifest from latent content."],
+["attribute","приписывать (причину)","Some attribute rising polarization to algorithmic curation."],
+["derive","выводить (из)","This framework is derived from cultural studies theory."],
+["stem from","происходить, проистекать из","Audience distrust often stems from perceived bias."],
+["correlate with","коррелировать с","Engagement tends to correlate with emotional intensity."],
+["account for","объяснять, учитывать","This model fails to account for offline influence."],
+["constitute","составлять, представлять собой","User-generated content now constitutes a major share of news."],
+["encompass","охватывать","Media studies encompasses both production and reception."],
+["underpin","лежать в основе","A deterministic logic underpins much of McLuhan's work."],
+["manifest","проявляться","Bias can manifest subtly in framing and word choice."],
+["perpetuate","увековечивать, поддерживать","Stereotypical portrayals can perpetuate social inequality."],
+["mitigate","смягчать","Fact-checking aims to mitigate the spread of misinformation."],
+["exacerbate","усугублять","Algorithmic amplification can exacerbate polarization."],
+["facilitate","способствовать, облегчать","Digital platforms facilitate rapid information sharing."],
+["constrain","ограничивать","Platform policies constrain what content can be shared."],
+["legitimize","легитимизировать","Repeated exposure can legitimize fringe viewpoints."],
+["delineate","обозначать, очерчивать","The author delineates three stages of media evolution."]
+];
+
+const SAVE_WORDS = LINKING_WORDS.map(w=>({term:w[0],ru:w[1],type:"linker"}))
+  .concat(ACADEMIC_VERBS.map(w=>({term:w[0],ru:w[1],type:"verb"})));
+
+// Combined swipeable deck: linking words + academic verbs, each with RU translation + example.
+const DECK = LINKING_WORDS.map(([term,ru,ex])=>({term,ru,ex,type:"связка"}))
+  .concat(ACADEMIC_VERBS.map(([term,ru,ex])=>({term,ru,ex,type:"глагол"})));
+
+const ESSAY_STRUCTURE = [
+["Introduction","Rephrase the question + provide a clear thesis statement responding directly to it."],
+["Body Paragraphs","Topic sentence → theory → explanation → example → explicit link back to the thesis."],
+["Conclusion","Summarize the key argument and restate the thesis. No new content."]
+];
+
+/* ======================= STATE / STORAGE ======================= */
+const STORE_KEY = "msExamApp_v1";
+function loadState(){
+  try{return JSON.parse(localStorage.getItem(STORE_KEY))||{};}catch(e){return {};}
+}
+let state = Object.assign({
+  topicsCompleted:[],
+  synScore:0,synTotal:0,
+  matchScore:0,matchTotal:0,
+  gapScore:0,gapTotal:0,
+  learnedCards:[]
+}, loadState());
+function save(){localStorage.setItem(STORE_KEY, JSON.stringify(state));}
+
+const PRAISE = ["Excellent!","Brilliant!","You're ready!","Sharp answer!","Nailed it!","Great work!"];
+function praise(){return PRAISE[Math.floor(Math.random()*PRAISE.length)];}
+
+/* ======================= COUNTDOWN ======================= */
+function updateCountdown(){
+  const target = new Date("2026-06-25T00:00:00").getTime();
+  const now = Date.now();
+  const diff = target - now;
+  const el = document.getElementById("countdownText");
+  if(diff<=0){el.textContent="Экзамен уже сегодня!";return;}
+  const d=Math.floor(diff/86400000), h=Math.floor(diff%86400000/3600000),
+        m=Math.floor(diff%3600000/60000), s=Math.floor(diff%60000/1000);
+  el.textContent = `${d}d ${h}h ${m}m ${s}s`;
+}
+setInterval(updateCountdown,1000); updateCountdown();
+
+/* ======================= PROGRESS ======================= */
+function updateOverallProgress(){
+  const parts = [
+    Math.min(state.topicsCompleted.length/20,1),
+    state.synTotal? state.synScore/Math.max(state.synTotal,20):0,
+    state.matchTotal? Math.min(state.matchScore/20,1):0,
+    state.gapTotal? Math.min(state.gapScore/20,1):0,
+    Math.min(state.learnedCards.length/DECK.length,1)
+  ];
+  const pct = Math.round(parts.reduce((a,b)=>a+b,0)/parts.length*100);
+  document.getElementById("overallProgress").style.width = pct+"%";
+}
+
+/* ======================= TABS / NAV ======================= */
+const SECTIONS = [
+  {id:"f1",label:"🎲 Темы эссе"},
+  {id:"f2",label:"✍️ Синонимы"},
+  {id:"f3",label:"🧩 Словарь"},
+  {id:"f4",label:"🔗 Связки"},
+  {id:"f5",label:"🃏 Карточки"},
+  {id:"f7",label:"📐 Структура"}
+];
+const tabsEl = document.getElementById("tabs");
+SECTIONS.forEach((s,i)=>{
+  const t=document.createElement("div");
+  t.className="tab"+(i===0?" active":"");
+  t.textContent=s.label;
+  t.onclick=()=>switchTab(s.id);
+  t.dataset.id=s.id;
+  tabsEl.appendChild(t);
+});
+function switchTab(id){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.id===id));
+  document.querySelectorAll(".section").forEach(s=>s.classList.toggle("active",s.id===id));
+}
+
+/* ======================= RENDER: ROOT ======================= */
+const content = document.getElementById("content");
+content.innerHTML = `
+<section id="f1" class="section active"></section>
+<section id="f2" class="section"></section>
+<section id="f3" class="section"></section>
+<section id="f4" class="section"></section>
+<section id="f5" class="section"></section>
+<section id="f7" class="section"></section>
+`;
+
+/* ======================= FEATURE 1: TOPIC GENERATOR ======================= */
+function renderF1(){
+  const el = document.getElementById("f1");
+  el.innerHTML = `
+  <div class="card glass">
+    <h2>Случайная тема для эссе</h2>
+    <div class="sub">Без таймера. Напиши Тезис → Антитезис → Синтез. Потом проверь, какие связки использовал.</div>
+    <div class="stat-row">
+      <div class="stat"><div class="num" id="topicsCount">${state.topicsCompleted.length}</div><div class="lbl">Тем пройдено</div></div>
+      <div class="stat"><div class="num">${TOPICS.length}</div><div class="lbl">Всего тем</div></div>
+    </div>
+    <button id="randomTopicBtn">🎲 Случайная тема</button>
+    <div class="topic-box" id="topicBox">Нажми «Случайная тема», чтобы начать.</div>
+    <div class="field-label">Тезис (Thesis)</div>
+    <textarea id="thesisInput" rows="3" placeholder="Сформулируй позицию..."></textarea>
+    <div class="field-label">Антитезис (Anti-thesis)</div>
+    <textarea id="antithesisInput" rows="3" placeholder="Сформулируй контр-позицию..."></textarea>
+    <div class="field-label">Синтез (Synthesis)</div>
+    <textarea id="synthesisInput" rows="3" placeholder="Объедини обе позиции..."></textarea>
+    <div class="row">
+      <button id="checkTopicBtn" class="secondary">Проверить связки</button>
+      <button id="completeTopicBtn">✅ Отметить тему пройденной</button>
+    </div>
+    <div class="flash" id="topicFlash"></div>
+    <div id="topicHighlightResult" style="margin-top:14px;"></div>
+  </div>`;
+  let currentTopic = null;
+  document.getElementById("randomTopicBtn").onclick = ()=>{
+    currentTopic = TOPICS[Math.floor(Math.random()*TOPICS.length)];
+    document.getElementById("topicBox").textContent = currentTopic;
+  };
+  document.getElementById("checkTopicBtn").onclick = ()=>{
+    const all = [document.getElementById("thesisInput").value,
+                 document.getElementById("antithesisInput").value,
+                 document.getElementById("synthesisInput").value].join(" ").toLowerCase();
+    const used = SAVE_WORDS.filter(w=>all.includes(w.term.toLowerCase()));
+    const box = document.getElementById("topicHighlightResult");
+    if(used.length===0){
+      box.innerHTML = `<div class="sub">Связки пока не найдены. Попробуй использовать слова из сайдбара справа!</div>`;
+    } else {
+      box.innerHTML = `<div class="field-label">Использованные слова (${used.length})</div>` +
+        used.map(w=>`<span class="highlight">${w.term}</span>`).join(" ");
+    }
+  };
+  document.getElementById("completeTopicBtn").onclick = ()=>{
+    if(currentTopic && !state.topicsCompleted.includes(currentTopic)){
+      state.topicsCompleted.push(currentTopic); save();
+      document.getElementById("topicsCount").textContent = state.topicsCompleted.length;
+      const f=document.getElementById("topicFlash"); f.className="flash ok"; f.textContent=praise()+" Тема отмечена пройденной.";
+      updateOverallProgress();
+    }
+  };
+}
+
+/* ======================= FEATURE 2: SYNONYM TYPING ======================= */
+let currentWeak = null;
+function renderF2(){
+  const el = document.getElementById("f2");
+  el.innerHTML = `
+  <div class="card glass">
+    <h2>Подбери синоним</h2>
+    <div class="sub">Напиши сильный академический синоним к слову. Пример ниже поможет понять контекст.</div>
+    <div class="stat-row">
+      <div class="stat"><div class="num" id="synScoreNum">${state.synScore}</div><div class="lbl">Правильно</div></div>
+      <div class="stat"><div class="num" id="synTotalNum">${state.synTotal}</div><div class="lbl">Попыток</div></div>
+    </div>
+    <div class="topic-box" id="weakWordBox">Нажми «Следующее слово».</div>
+    <div class="sub" id="weakWordExample" style="font-style:italic;"></div>
+    <input type="text" id="synInput" placeholder="Введи синоним...">
+    <div class="row">
+      <button id="nextWeakBtn" class="secondary">Следующее слово</button>
+      <button id="checkSynBtn">Проверить</button>
+    </div>
+    <div class="flash" id="synFlash"></div>
+  </div>`;
+  function nextWord(){
+    const keys = Object.keys(SYNONYMS);
+    currentWeak = keys[Math.floor(Math.random()*keys.length)];
+    document.getElementById("weakWordBox").textContent = currentWeak.toUpperCase();
+    const ex = SYN_EXAMPLES[currentWeak] || "";
+    document.getElementById("weakWordExample").innerHTML = ex ? "Пример: " + ex.replace("___", `<b>${currentWeak}</b>`) : "";
+    document.getElementById("synInput").value="";
+    document.getElementById("synFlash").className="flash";
+    document.getElementById("synFlash").textContent="";
+  }
+  document.getElementById("nextWeakBtn").onclick = nextWord;
+  document.getElementById("checkSynBtn").onclick = ()=>{
+    if(!currentWeak) return;
+    const val = document.getElementById("synInput").value.trim().toLowerCase();
+    const correctList = SYNONYMS[currentWeak];
+    const flash = document.getElementById("synFlash");
+    state.synTotal++;
+    if(correctList.includes(val)){
+      state.synScore++;
+      flash.className="flash ok"; flash.textContent=praise()+" Верные синонимы: "+correctList.join(", ");
+    } else {
+      flash.className="flash bad"; flash.textContent="Не совсем. Верные синонимы: "+correctList.join(", ");
+    }
+    save();
+    document.getElementById("synScoreNum").textContent = state.synScore;
+    document.getElementById("synTotalNum").textContent = state.synTotal;
+    updateOverallProgress();
+  };
+  nextWord();
+}
+
+/* ======================= FEATURE 3: VOCAB MATCH ======================= */
+function renderF3(){
+  const el = document.getElementById("f3");
+  const words = Object.keys(VOCAB);
+  // pick a random subset of 10 for one round
+  const shuffled = [...words].sort(()=>Math.random()-0.5).slice(0,10);
+  const defs = shuffled.map(w=>VOCAB[w]).sort(()=>Math.random()-0.5);
+  el.innerHTML = `
+  <div class="card glass">
+    <h2>Найди пару (Vocabulary Drill)</h2>
+    <div class="sub">Кликни на слово, потом на его определение.</div>
+    <div class="stat-row">
+      <div class="stat"><div class="num" id="matchScoreNum">${state.matchScore}</div><div class="lbl">Правильно</div></div>
+      <div class="stat"><div class="num" id="matchTotalNum">${state.matchTotal}</div><div class="lbl">Попыток</div></div>
+    </div>
+    <div class="def-grid">
+      <div id="wordCol"></div>
+      <div id="defCol"></div>
+    </div>
+    <div class="row"><button id="newRoundBtn" class="secondary">Новый раунд</button></div>
+    <div class="flash" id="matchFlash"></div>
+  </div>`;
+  const wordCol = document.getElementById("wordCol");
+  const defCol = document.getElementById("defCol");
+  let selectedWord = null;
+  let matchedWords = new Set();
+
+  shuffled.forEach(w=>{
+    const d = document.createElement("div");
+    d.className="match-item"; d.textContent=w; d.dataset.word=w;
+    d.onclick=()=>{
+      if(matchedWords.has(w)) return;
+      document.querySelectorAll("#wordCol .match-item").forEach(x=>x.classList.remove("selected"));
+      d.classList.add("selected"); selectedWord = w;
+    };
+    wordCol.appendChild(d);
+  });
+  defs.forEach(def=>{
+    const d = document.createElement("div");
+    d.className="match-item"; d.textContent=def; d.dataset.def=def;
+    d.onclick=()=>{
+      if(!selectedWord) return;
+      state.matchTotal++;
+      const correctDef = VOCAB[selectedWord];
+      const wordEl = document.querySelector(`#wordCol .match-item[data-word="${selectedWord.replace(/"/g,'\\"')}"]`);
+      if(def===correctDef){
+        state.matchScore++;
+        d.classList.add("correct"); wordEl.classList.add("correct");
+        matchedWords.add(selectedWord);
+        d.onclick=null;
+      } else {
+        d.classList.add("wrong"); setTimeout(()=>d.classList.remove("wrong"),600);
+        wordEl.classList.add("wrong"); setTimeout(()=>wordEl.classList.remove("wrong"),600);
+      }
+      selectedWord=null;
+      document.querySelectorAll("#wordCol .match-item").forEach(x=>x.classList.remove("selected"));
+      save();
+      document.getElementById("matchScoreNum").textContent=state.matchScore;
+      document.getElementById("matchTotalNum").textContent=state.matchTotal;
+      const f=document.getElementById("matchFlash");
+      f.className="flash "+(def===correctDef?"ok":"bad");
+      f.textContent = def===correctDef? praise() : "Не та пара — попробуй ещё.";
+      updateOverallProgress();
+    };
+    defCol.appendChild(d);
+  });
+  document.getElementById("newRoundBtn").onclick = renderF3;
+}
+
+/* ======================= FEATURE 4: LINKING WORD GAPFILL ======================= */
+let currentGap = null;
+function renderF4(){
+  const el = document.getElementById("f4");
+  el.innerHTML = `
+  <div class="card glass">
+    <h2>Вставь связку (linking word)</h2>
+    <div class="sub">Заполни пропуск нужным словом-связкой, потом проверь.</div>
+    <div class="stat-row">
+      <div class="stat"><div class="num" id="gapScoreNum">${state.gapScore}</div><div class="lbl">Правильно</div></div>
+      <div class="stat"><div class="num" id="gapTotalNum">${state.gapTotal}</div><div class="lbl">Попыток</div></div>
+    </div>
+    <div class="topic-box" id="gapSentence">Нажми «Далее», чтобы начать.</div>
+    <input type="text" id="gapInput" placeholder="Введи пропущенное слово...">
+    <div class="row">
+      <button id="nextGapBtn" class="secondary">Далее</button>
+      <button id="checkGapBtn">Проверить</button>
+    </div>
+    <div class="flash" id="gapFlash"></div>
+  </div>`;
+  function nextGap(){
+    currentGap = GAPFILL[Math.floor(Math.random()*GAPFILL.length)];
+    document.getElementById("gapSentence").textContent = currentGap[0];
+    document.getElementById("gapInput").value="";
+    document.getElementById("gapFlash").className="flash"; document.getElementById("gapFlash").textContent="";
+  }
+  document.getElementById("nextGapBtn").onclick = nextGap;
+  document.getElementById("checkGapBtn").onclick = ()=>{
+    if(!currentGap) return;
+    const val = document.getElementById("gapInput").value.trim().toLowerCase();
+    const flash = document.getElementById("gapFlash");
+    state.gapTotal++;
+    if(val===currentGap[1].toLowerCase()){
+      state.gapScore++;
+      flash.className="flash ok"; flash.textContent=praise()+" Верно: "+currentGap[1];
+    } else {
+      flash.className="flash bad"; flash.textContent="Правильный ответ: "+currentGap[1];
+    }
+    save();
+    document.getElementById("gapScoreNum").textContent=state.gapScore;
+    document.getElementById("gapTotalNum").textContent=state.gapTotal;
+    updateOverallProgress();
+  };
+  nextGap();
+}
+
+/* ======================= FEATURE 5: SWIPEABLE FLASHCARDS ======================= */
+let deckOrder = DECK.map((_,i)=>i);
+let deckIndex = 0;
+let deckFilter = "all";
+
+function getFilteredOrder(){
+  if(deckFilter==="all") return DECK.map((_,i)=>i);
+  return DECK.map((_,i)=>i).filter(i=>DECK[i].type===deckFilter);
+}
+
+function renderF5(){
+  const el = document.getElementById("f5");
+  deckOrder = getFilteredOrder();
+  if(deckIndex>=deckOrder.length) deckIndex=0;
+  el.innerHTML = `
+  <div class="card glass">
+    <h2>Карточки: связки и глаголы (Flashcards)</h2>
+    <div class="sub">Кликни на карточку, чтобы перевернуть и увидеть перевод + пример. Свайпай ← → или жми кнопки.</div>
+    <div class="stat-row">
+      <div class="stat"><div class="num" id="learnedNum">${state.learnedCards.length}</div><div class="lbl">Выучено</div></div>
+      <div class="stat"><div class="num">${DECK.length}</div><div class="lbl">Всего карточек</div></div>
+    </div>
+    <div class="deck-filter">
+      <div class="tab ${deckFilter==='all'?'active':''}" data-f="all">Все</div>
+      <div class="tab ${deckFilter==='связка'?'active':''}" data-f="связка">Связки</div>
+      <div class="tab ${deckFilter==='глагол'?'active':''}" data-f="глагол">Глаголы</div>
+    </div>
+    <div class="swipe-wrap">
+      <div class="swipe-card" id="swipeCard">
+        <div class="swipe-inner" id="swipeInner">
+          <div class="swipe-face swipe-front">
+            <div class="term" id="swipeTerm"></div>
+            <div class="type-tag" id="swipeType"></div>
+          </div>
+          <div class="swipe-face swipe-back">
+            <div class="ru" id="swipeRu"></div>
+            <div class="ex" id="swipeEx"></div>
+          </div>
+        </div>
+      </div>
+      <div class="swipe-controls">
+        <button id="prevCardBtn" class="secondary">←</button>
+        <button id="learnBtn">${"⭐ Выучено"}</button>
+        <button id="nextCardBtn" class="secondary">→</button>
+      </div>
+      <div class="swipe-counter" id="swipeCounter"></div>
+      <button id="resetCardsBtn" class="secondary" style="margin-top:4px;">Сбросить прогресс</button>
+    </div>
+  </div>`;
+
+  el.querySelectorAll(".deck-filter .tab").forEach(t=>{
+    t.onclick = ()=>{ deckFilter = t.dataset.f; deckIndex=0; renderF5(); };
+  });
+
+  function showCard(){
+    const card = document.getElementById("swipeCard");
+    card.classList.remove("flipped");
+    const item = DECK[deckOrder[deckIndex]];
+    document.getElementById("swipeTerm").textContent = item.term;
+    document.getElementById("swipeType").textContent = item.type;
+    document.getElementById("swipeRu").textContent = item.ru;
+    document.getElementById("swipeEx").textContent = item.ex;
+    document.getElementById("swipeCounter").textContent = (deckIndex+1)+" / "+deckOrder.length;
+    const learned = state.learnedCards.includes(item.term);
+    document.getElementById("learnBtn").textContent = learned ? "✅ В выученных" : "⭐ Отметить выученным";
+  }
+
+  document.getElementById("swipeCard").onclick = ()=>{
+    document.getElementById("swipeCard").classList.toggle("flipped");
+  };
+  document.getElementById("prevCardBtn").onclick = ()=>{
+    deckIndex = (deckIndex-1+deckOrder.length)%deckOrder.length; showCard();
+  };
+  document.getElementById("nextCardBtn").onclick = ()=>{
+    deckIndex = (deckIndex+1)%deckOrder.length; showCard();
+  };
+  document.getElementById("learnBtn").onclick = ()=>{
+    const item = DECK[deckOrder[deckIndex]];
+    const idx = state.learnedCards.indexOf(item.term);
+    if(idx>=0) state.learnedCards.splice(idx,1); else state.learnedCards.push(item.term);
+    save();
+    document.getElementById("learnedNum").textContent = state.learnedCards.length;
+    showCard();
+    updateOverallProgress();
+  };
+  document.getElementById("resetCardsBtn").onclick = ()=>{
+    state.learnedCards = []; save(); showCard();
+    document.getElementById("learnedNum").textContent = state.learnedCards.length;
+    updateOverallProgress();
+  };
+
+  // touch swipe support
+  let touchStartX = null;
+  const cardEl = document.getElementById("swipeCard");
+  cardEl.addEventListener("touchstart", e=>{ touchStartX = e.touches[0].clientX; }, {passive:true});
+  cardEl.addEventListener("touchend", e=>{
+    if(touchStartX===null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if(Math.abs(dx)>40){
+      if(dx<0){ deckIndex=(deckIndex+1)%deckOrder.length; } else { deckIndex=(deckIndex-1+deckOrder.length)%deckOrder.length; }
+      showCard();
+    }
+    touchStartX=null;
+  }, {passive:true});
+
+  showCard();
+}
+
+/* ======================= FEATURE 7: ESSAY STRUCTURE ======================= */
+function renderF7(){
+  const el = document.getElementById("f7");
+  el.innerHTML = `
+  <div class="card glass">
+    <h2>Структура эссе — шпаргалка</h2>
+    <div class="sub">Держи эту структуру в голове на письменном экзамене.</div>
+    <div class="essay-struct">
+      ${ESSAY_STRUCTURE.map(([t,d])=>`<div><b>${t}:</b> ${d}</div>`).join("")}
+    </div>
+  </div>
+  <div class="card glass">
+    <h2 style="font-size:16px;">Академические глаголы и связки</h2>
+    <div class="sub">Полезные глаголы для аналитических абзацев.</div>
+    <div class="def-grid">
+      ${ACADEMIC_VERBS.map(([v,ru])=>`<div class="save-item"><b>${v}</b> — ${ru}</div>`).join("")}
+    </div>
+  </div>`;
+}
+
+/* ======================= SIDEBAR: SAVE WORDS LIST ======================= */
+function renderSaveWords(filter=""){
+  const list = document.getElementById("saveWordsList");
+  const f = filter.toLowerCase();
+  const items = SAVE_WORDS.filter(w=>w.term.toLowerCase().includes(f)||w.ru.toLowerCase().includes(f));
+  list.innerHTML = items.map(w=>`<div class="save-item"><b>${w.term}</b><span>${w.ru}</span></div>`).join("") ||
+    `<div class="sub">Нет совпадений.</div>`;
+}
+document.getElementById("saveSearch").addEventListener("input", e=>renderSaveWords(e.target.value));
+
+/* ======================= INIT ======================= */
+renderF1(); renderF2(); renderF3(); renderF4(); renderF5(); renderF7();
+renderSaveWords();
+updateOverallProgress();
+</script>
+</body>
+</html>
